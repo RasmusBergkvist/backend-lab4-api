@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 //Användarschema
-const userSchema = new Mongoose.Schema({
+const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
@@ -27,7 +27,7 @@ const userSchema = new Mongoose.Schema({
 });
 
 //Hasha lösenord innan det sparas
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
     try {
         if (this.isNew || this.isModified("password")) {
             const hashedPassword = await bcrypt.hash(this.password, 10);
@@ -35,9 +35,8 @@ userSchema.pre("save", async function (next) {
             this.password = hashedPassword;
         }
         
-        next();
     } catch (error) {
-        next(error)
+        throw error;
     }
 
 });
@@ -73,14 +72,14 @@ userSchema.statics.login = async function(username, password) {
 
         //Kontroll om användaren finns i databasen
         if(!user) {
-            throw new Error("Felaktigt användarnamn eller lösenord")
+            throw new Error("Incorrect username or password")
         }
 
         //Jämför lösenord
          const passwordMatch = await user.comparePasswords(password);
          //Om angivet lösenord inte stämmer
          if (!passwordMatch) {
-            throw new Error("Felaktigt användarnamn eller lösenord");
+            throw new Error("Incorrect username or password");
          }
 
          return user;

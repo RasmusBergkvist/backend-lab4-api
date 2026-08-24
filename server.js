@@ -1,9 +1,12 @@
 require("dotenv").config();
 
-//Hämtar Express, Mongoose CORS
+//Hämtar Express, Mongoose och CORS
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
+//Hämtar authRoutes
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,9 +23,11 @@ mongoose.connect(process.env.DATABASE).then(() => {
 });
 
 //Routes
-app.get("/api", (rq, res) => {
+app.get("/", (req, res) => {
     res.json("API is running");
-})
+});
+
+app.use("/api", userRoutes);
 
 //Lyssnar och startar applikationen på porten
 app.listen(port, () => {
