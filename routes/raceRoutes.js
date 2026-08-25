@@ -2,6 +2,9 @@
 const express = require("express");
 const Race = require("../models/race");
 
+//Hämtar middleware
+const authenticateToken = require("../middleware/authenticateToken");
+
 const router = express.Router();
 
 //Hämtar alla lopp
@@ -22,9 +25,14 @@ router.get("/", async (req, res) => {
 });
 
 //Lägga till lopp.
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
     try {
-        const { name, date, distance, location, description, createdBy } = req.body;
+     
+        const { name, date, distance, location, description } = req.body;
+
+        if (!name || !date || distance <= 0 || !location) {
+            return res.status(400).json({ message: "Fill in required fields" });
+        }
 
         //Kontrollera att om loppet redan finns. 
         let isRegister = await Race.findOne({ name, date, location });
@@ -33,30 +41,32 @@ router.post("/", async (req, res) => {
             return res.status(409).json({ message: "Race is already added." })
         }
 
-        if (!name || !date || distance <= 0 || !location || !createdBy) {
-            return res.status(400).json({ message: "Fill in required fields" });
-        }
 
         //Skapar nytt lopp som ett objekt
-        let newRace = await Race.create({ name, date, distance, location, description, createdBy });
+        let newRace = await Race.create({ name, date, distance, location, description, createdBy: req.username });
 
         return res.status(201).json(newRace);
 
     } catch (error) {
-        return res.status(500).json({ error: "Internal server error. Failed to post race." })
+        return res.status(500).json({ error: "Internal server error. Failed to post race.",   messageFromNode: error.message, 
+            whereItHappened: error.stack })
     }
 
 });
 
 //Uppdatera lopp
-router.put("/:id", async (req, res) => {
+router.put("/:id", authenticateToken, async (req, res) => {
     try {
+       
+        //Hämtar värden som ska uppdateras
+        const {name, date, distance, location, description } = req.body;
 
-        let updateRace = await Race.updateOne({ _id: req.params.id }, { $set: req.body }, { runValidators: true });
+        //Uppdatera värden som användaren har skapat.
+        let updateRace = await Race.updateOne({ _id: req.params.id, createdBy: req.username }, { $set: {name, date, distance, location, description }}, { runValidators: true });
 
         //Om inget matchat lopp hittas
         if (updateRace.matchedCount === 0) {
-            return res.status(404).json({ message: "Race not found." });
+            return res.status(404).json({ message: "You have no races to update." });
         }
 
         return res.status(200).json({ message: "Race updated." })
@@ -73,13 +83,15 @@ router.put("/:id", async (req, res) => {
 });
 
 //Ta bort ett lopp
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
     try {
-        let deleteRace = await Race.deleteOne({ _id: req.params.id });
+    
+        //Tar bort lopp som användaren har skapat.
+        let deleteRace = await Race.deleteOne({ _id: req.params.id, createdBy: req.username });
 
         //Om inget resultat hittas
         if (deleteRace.deletedCount === 0) {
-            return res.status(404).json({ message: "No race found." });
+            return res.status(404).json({ message: "You have no races to delete." });
         }
 
         return res.status(200).json({ message: "Race deleted" });

@@ -1,5 +1,6 @@
-//Hämtar express och User
+//Hämtar express, jwt och User
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
 const router = express.Router();
@@ -57,10 +58,13 @@ router.post("/login", async (req, res) => {
             //Om lösenord inte stämmer
             return res.status(401).json({ error: "Incorrect username or password" });
         }
+        
+        //Skapa token om användareuppgifterna stämmer
+        const payload = {username: username};
+        const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: "1h"});
+        const response = ({ message: "User logged in!", token: token})
 
-
-        //Om använderuppgifterna stämmer
-        return res.status(200).json({ message: "User logged in!" })
+        return res.status(200).json({response});
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error: " + error });
