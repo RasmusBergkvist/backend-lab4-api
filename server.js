@@ -5,8 +5,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-//Hämtar authRoutes
+//Hämtar Routes
 const userRoutes = require("./routes/userRoutes");
+const raceRoutes = require("./routes/raceRoutes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -27,7 +28,8 @@ app.get("/", (req, res) => {
     res.json("API is running");
 });
 
-app.use("/api", userRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/races", raceRoutes);
 
 //Lyssnar och startar applikationen på porten
 app.listen(port, () => {

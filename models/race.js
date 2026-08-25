@@ -15,7 +15,7 @@ const raceSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    place: {
+    location: {
         type: String,
         required: true,
         trim: true,
