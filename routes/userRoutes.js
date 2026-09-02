@@ -58,13 +58,18 @@ router.post("/login", async (req, res) => {
             //Om lösenord inte stämmer
             return res.status(401).json({ error: "Incorrect username or password" });
         }
-        
-        //Skapa token om användareuppgifterna stämmer
+                //Skapa token om användareuppgifterna stämmer
         const payload = {username: username};
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: "1h"});
-        const response = ({ message: "User logged in!", token: token})
 
-        return res.status(200).json({response});
+        response = {
+            message: "User logged in",
+            token: token,
+            username: username
+        }
+
+        return res.status(200).json(response);
+
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error: " + error });

@@ -13,12 +13,34 @@ router.get("/", async (req, res) => {
         // Sortera efter datum
         const races = await Race.find().sort({ date: 1 });
 
-        if (races.length === 0) {
-            return res.status(404).json({ message: "No races stored in database" })
-        }
         return res.json(races);
 
     } catch (error) {
+        return res.status(500).json({ error: "Internal server error: Failed to get data." });
+
+    }
+});
+
+//Hämtar ett lopp
+router.get("/:id", async (req, res) => {
+    try {
+       
+             const result = await Race.findOne({ _id: req.params.id });
+
+        //Om ingen post hittas.
+        if (!result) {
+            res.status(404).json({ message: "Race not found." });
+            return;
+        }
+
+        return res.json(result);
+
+    } catch (error) {
+        //Om felaktigt id anges
+        if (error.name === "CastError") {
+            return res.status(400).json({ message: "Invalid ID." });
+        }
+
         return res.status(500).json({ error: "Internal server error: Failed to get data." });
 
     }
@@ -96,6 +118,12 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 
         return res.status(200).json({ message: "Race deleted" });
     } catch (error) {
+        
+        //Vid om felaktigt id anges
+        if (error.name === "CastError") {
+            return res.status(400).json({ message: "Invalid ID." });
+        }
+        
         return res.status(500).json({ error: "Internal server error. Failed to delete race." });
 
     }
