@@ -1,7 +1,7 @@
-# Laboration 4.1 API 
-I denna uppgift har jag byggt ett API byggt med Express och Mongo DB. Via API:et kan nya användare registreras, logga in och valideras med JWT-tokens. Lösenord hashas innan lagring till databasen. Det går även att hämta, skapa, uppdatera och radera lopp. Routes för att skapa (POST), uppdatera (PUT) och radera (DELETE) ett lopp är skyddade och kräver en giltig token frå användaren. Det API kommer att integreras med en webbplats i laborationens andra del.
+# Laboration 4.1 REST-API 
+I denna uppgift har jag byggt ett REST-API med Express och Mongo DB. Via API:et kan nya användare registreras, logga in och valideras med JWT-tokens. Lösenord hashas innan lagring till databasen. Det går även att hämta, skapa, uppdatera och radera lopp. Routes för att skapa (POST), uppdatera (PUT) och radera (DELETE) ett lopp  är skyddade och kräver en giltig token frå användaren. Detta API kommer att integreras med en webbplats i laborationens andra del.
 
-## Url till API
+## Url till REST-API
 
 
 ## Teknik
@@ -28,7 +28,7 @@ I denna uppgift har jag byggt ett API byggt med Express och Mongo DB. Via API:et
 ```
 Statuskod vid svar:
 * 201 Created: Om användare skapas.
-* 400 Bad reuest: Om obligatoriska fält inte är ifyllda.
+* 400 Bad request: Om obligatoriska fält inte är ifyllda.
 * 409 Conflict: Om användaren redan finns registerad
 * 500 Internal Server Error
 
@@ -43,7 +43,7 @@ Statuskod vid svar:
 ```
 Statuskod vid svar:
 * 200 OK: Vid lyckad inloggning.
-* 400 Bad reuest: Om obligatoriska fält inte är ifyllda.
+* 400 Bad request: Om obligatoriska fält inte är ifyllda.
 * 401 Unauthorized: Misslyckad inloggning.
 * 500 Internal Server Error
 

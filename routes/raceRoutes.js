@@ -70,8 +70,7 @@ router.post("/", authenticateToken, async (req, res) => {
         return res.status(201).json(newRace);
 
     } catch (error) {
-        return res.status(500).json({ error: "Internal server error. Failed to post race.",   messageFromNode: error.message, 
-            whereItHappened: error.stack })
+        return res.status(500).json({ error: "Internal server error. Failed to post race."})
     }
 
 });
