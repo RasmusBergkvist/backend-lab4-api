@@ -2,7 +2,7 @@
 I denna uppgift har jag byggt ett REST-API med Express och Mongo DB. Via API:et kan nya användare registreras, logga in och valideras med JWT-tokens. Lösenord hashas innan lagring till databasen. Det går även att hämta, skapa, uppdatera och radera lopp. Routes för att skapa (POST), uppdatera (PUT) och radera (DELETE) ett lopp  är skyddade och kräver en giltig token frå användaren. Detta API kommer att integreras med en webbplats i laborationens andra del.
 
 ## Url till REST-API
-
+https://backend-lab4-api.onrender.com/
 
 ## Teknik
 * Databas: Mongo DB 
